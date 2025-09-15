@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "theatre.apps.TheatreConfig",
+    "accounts",
+    "bookings",
 ]
 
 MIDDLEWARE = [
