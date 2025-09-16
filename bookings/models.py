@@ -77,8 +77,10 @@ class Ticket(models.Model):
     class Meta:
         verbose_name = "Ticket"
         verbose_name_plural = "Tickets"
-        unique_together = [["performance", "row", "seat"]]
-        ordering = ["row", "seat"]
+        unique_together = ("performance", "row", "seat")
+        ordering = ("row", "seat")
 
     def __str__(self):
-        return f"Ticket: ({self.row}, {self.seat})"
+        return (
+            f"{str(self.performance)} (row: {self.row}, seat: {self.seat})"
+        )
