@@ -1,12 +1,15 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from theatre.utils import play_image_file_path
+
 
 class Play(models.Model):
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField(max_length=512)
     actors = models.ManyToManyField("Actor", related_name="plays", blank=True)
     genres = models.ManyToManyField("Genre", related_name="plays", blank=True)
+    image = models.ImageField(null=True, blank=True, upload_to=play_image_file_path)
 
     class Meta:
         verbose_name = "Play"
@@ -55,6 +58,10 @@ class TheatreHall(models.Model):
         verbose_name = "Theatre Hall"
         verbose_name_plural = "Theatre Halls"
         ordering = ["name"]
+
+    @property
+    def capacity(self) -> int:
+        return self.rows * self.seats_in_row
 
     def __str__(self):
         return f"{self.name} (Rows: {self.rows}, Seats in row: {self.seats_in_row})"
