@@ -16,6 +16,13 @@ class TicketSerializer(serializers.ModelSerializer):
             attrs["performance"].theatre_hall,
             ValidationError
         )
+        if Ticket.objects.filter(
+                performance=attrs["performance"],
+                row=attrs["row"],
+                seat=attrs["seat"]
+        ).exists():
+            raise ValidationError("This seat is already booked")
+
         return attrs
 
     class Meta:
@@ -28,11 +35,12 @@ class TicketDetailSerializer(TicketSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
+    tickets = TicketSerializer(many=True, write_only=True, allow_empty=False)
+    reservation_tickets = TicketDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = Reservation
-        fields = ("id", "tickets", "created_at")
+        fields = ("id", "tickets", "reservation_tickets", "created_at")
 
     def create(self, validated_data):
         with transaction.atomic():
@@ -44,4 +52,8 @@ class ReservationSerializer(serializers.ModelSerializer):
 
 
 class ReservationListSerializer(ReservationSerializer):
-    tickets = TicketDetailSerializer(many=True, read_only=True)
+    reservation_tickets = TicketSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Reservation
+        fields = ("id", "reservation_tickets", "created_at")
