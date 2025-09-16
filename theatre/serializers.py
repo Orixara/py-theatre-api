@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from theatre.models import Actor, Genre, TheatreHall, Play, Performance
+
+from bookings.serializers import TakenSeatsSerializer
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -85,7 +86,7 @@ class PerformanceListSerializer(PerformanceSerializer):
 class PerformanceDetailSerializer(PerformanceSerializer):
     play = PlayListSerializer(many=False, read_only=True)
     theatre_hall = TheatreHallSerializer(many=False, read_only=True)
-    taken_place = ... #TODO Create TicketSeatsSerializer and add there
+    taken_place = TakenSeatsSerializer(source="tickets", many=True, read_only=True)
 
     class Meta:
         model = Performance
