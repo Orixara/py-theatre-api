@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
+from bookings.models import Ticket
 from theatre.models import Actor, Genre, TheatreHall, Play, Performance
-
-from bookings.serializers import TakenSeatsSerializer
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -82,6 +81,11 @@ class PerformanceListSerializer(PerformanceSerializer):
             "tickets_available"
         )
 
+
+class TakenSeatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("row", "seat")
 
 class PerformanceDetailSerializer(PerformanceSerializer):
     play = PlayListSerializer(many=False, read_only=True)

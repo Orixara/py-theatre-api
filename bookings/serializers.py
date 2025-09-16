@@ -27,12 +27,6 @@ class TicketDetailSerializer(TicketSerializer):
     performance = PerformanceListSerializer(many=False, read_only=True)
 
 
-class TakenSeatsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ticket
-        fields = ("row", "seat")
-
-
 class ReservationSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
 
