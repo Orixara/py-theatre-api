@@ -64,7 +64,7 @@ class PerformanceFilter(django_filters.FilterSet):
         method="filter_available_tickets"
     )
 
-    def filter_available_tickets(self, queryset, value):
+    def filter_available_tickets(self, queryset, name, value):
         if value:
             return queryset.filter(tickets_available__gt=0)
         return queryset
