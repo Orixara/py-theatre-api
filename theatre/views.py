@@ -1,5 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Count, F
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from theatre.filters import PlayFilter, PerformanceFilter
 
 from py_theatre_api.permissions import IsAdminOrIfAuthenticatedReadOnly
 from theatre.models import Genre, Actor, TheatreHall, Play, Performance
@@ -38,6 +41,17 @@ class PlayViewSet(ModelViewSet):
     queryset = Play.objects.all()
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
 
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = PlayFilter
+    search_fields = (
+        "title",
+        "description",
+        "actors__first_name",
+        "actors__last_name"
+    )
+    ordering_fields = ("title", "id")
+    ordering = ("title", )
+
     def get_serializer_class(self):
         if self.action == "list":
             return PlayListSerializer
@@ -55,6 +69,12 @@ class PlayViewSet(ModelViewSet):
 class PerformanceViewSet(ModelViewSet):
     queryset = Performance.objects.all()
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = PerformanceFilter
+    search_fields = ("play__title", "play__description")
+    ordering_fields = ("show_time", "id")
+    ordering = ("show_time",)
 
     def get_serializer_class(self):
         if self.action == "list":
