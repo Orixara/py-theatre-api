@@ -38,16 +38,24 @@ INTERNAL_IPS = [
 # Application definition
 
 INSTALLED_APPS = [
+    #DJANGO
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters"
+    
+    #DRF
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_spectacular",
+
+    #DEBUG-TOOLBAR
     "debug_toolbar",
+
+    #APPS
     "theatre.apps.TheatreConfig",
     "accounts",
     "bookings",
@@ -156,6 +164,11 @@ REST_FRAMEWORK = {
         "login": "5/min",
         "booking": "10/min",
     },
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ]
 }
 
 
