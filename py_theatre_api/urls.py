@@ -16,8 +16,32 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from drf_spectacular.views import (
+    SpectacularSwaggerView,
+    SpectacularAPIView
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-]
+    path(
+        "api/theatre/",
+        include("theatre.urls", namespace="theatre")
+    ),
+    path(
+        "api/bookings/",
+        include("bookings.urls", namespace="bookings")
+    ),
+    path(
+        "api/users/",
+        include("accounts.urls", namespace="accounts")
+    ),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/doc/swagger/", SpectacularSwaggerView.as_view(url_name="schema")),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG and "debug_toolbar" in settings.INSTALLED_APPS:
+    urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
