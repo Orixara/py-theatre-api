@@ -21,7 +21,11 @@ class TicketSerializer(serializers.ModelSerializer):
                 row=attrs["row"],
                 seat=attrs["seat"]
         ).exists():
-            raise ValidationError("This seat is already booked")
+            raise ValidationError(
+                {
+                    "non_field_errors": ["This seat is already booked"]
+                }
+            )
 
         return attrs
 

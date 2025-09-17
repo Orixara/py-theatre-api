@@ -10,8 +10,8 @@ urlpatterns = [
     #Custom endpoints
     path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),
-    path("me/", UserProfileView.as_view(), name="profile"),
-    path("change-password/", ChangePasswordView.as_view(), name="change_password"),
+    path("me/", UserProfileView.as_view(), name="user-profile"),
+    path("change-password/", ChangePasswordView.as_view(), name="change-password"),
 
     #JWT endpoints
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

@@ -60,6 +60,17 @@ class Ticket(models.Model):
             self.performance.theatre_hall,
             ValidationError,
         )
+        
+        existing_ticket = Ticket.objects.filter(
+            performance=self.performance,
+            row=self.row,
+            seat=self.seat
+        ).exclude(pk=self.pk)
+        
+        if existing_ticket.exists():
+            raise ValidationError(
+                {"__all__": "This seat is already booked"}
+            )
 
     def save(
             self,
@@ -77,7 +88,6 @@ class Ticket(models.Model):
     class Meta:
         verbose_name = "Ticket"
         verbose_name_plural = "Tickets"
-        unique_together = ("performance", "row", "seat")
         ordering = ("row", "seat")
 
     def __str__(self):
