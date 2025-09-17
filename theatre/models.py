@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.core.validators import MinValueValidator
 from django.db import models
-from jsonschema.exceptions import ValidationError
+from django.core.exceptions import ValidationError
 
 from theatre.utils import play_image_file_path
 
