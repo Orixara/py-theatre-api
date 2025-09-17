@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils import timezone
 
 from bookings.models import Ticket
 from theatre.models import Actor, Genre, TheatreHall, Play, Performance
@@ -54,6 +55,11 @@ class PerformanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Performance
         fields = ("id", "show_time", "play", "theatre_hall")
+
+    def validate_show_time(self, value):
+        if value <= timezone.now():
+            raise serializers.ValidationError("Show time must be in the future.")
+        return value
 
 
 class PerformanceListSerializer(PerformanceSerializer):

@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.db import transaction
@@ -10,6 +11,12 @@ from bookings.models import Ticket, Reservation
 class TicketSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         attrs = super().validate(attrs)
+
+        if attrs["performance"].show_time <= timezone.now():
+            raise ValidationError(
+                {"performance": "Tickets cannot be booked for a past performance."}
+            )
+
         Ticket.validate_tickets(
             attrs["row"],
             attrs["seat"],

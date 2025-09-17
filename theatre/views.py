@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Count, F
 from django_filters.rest_framework import DjangoFilterBackend
@@ -88,6 +89,7 @@ class PerformanceViewSet(ModelViewSet):
         if self.action == "list":
             queryset = (
                 queryset
+                .filter(show_time__gte=timezone.now())
                 .select_related("play", "theatre_hall")
                 .annotate(
                     tickets_available=(

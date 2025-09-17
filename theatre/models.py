@@ -1,5 +1,7 @@
+from django.utils import timezone
 from django.core.validators import MinValueValidator
 from django.db import models
+from jsonschema.exceptions import ValidationError
 
 from theatre.utils import play_image_file_path
 
@@ -80,8 +82,23 @@ class Performance(models.Model):
     )
     show_time = models.DateTimeField(db_index=True)
 
+    def clean(self):
+        super().clean()
+        if self.show_time <= timezone.now():
+            raise ValidationError("Show time must be in the future.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
     class Meta:
         ordering = ["-show_time"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["play", "theatre_hall", "show_time"],
+                name="uniq_performance_hall_time"
+            ),
+        ]
 
     def __str__(self):
         return f"Performance {self.id} - {self.show_time}"
